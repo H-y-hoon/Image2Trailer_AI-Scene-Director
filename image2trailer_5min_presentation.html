@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Image2Trailer 5분 발표</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --paper: #ffffff;
+      --ink: #151923;
+      --muted: #596575;
+      --line: #d9e0e8;
+      --teal: #0f766e;
+      --green: #1f8a4c;
+      --gold: #b98316;
+      --red: #b24a3b;
+      --blue: #315d9a;
+      --soft-teal: #e2f4f1;
+      --soft-gold: #fff3d8;
+      --soft-blue: #e8f0fb;
+      --soft-red: #fae8e4;
+      --shadow: 0 18px 50px rgba(31, 41, 55, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+    .stage {
+      width: min(1600px, 100vw);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: clamp(16px, 2.1vw, 34px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+    .top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.75fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+    .hero, .panel, .tile, .visual, .talk-track {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      padding: clamp(20px, 2.2vw, 34px);
+      display: grid;
+      align-content: center;
+      gap: 18px;
+    }
+    .kicker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); display: inline-block; }
+    h1 {
+      margin: 0;
+      max-width: 980px;
+      font-size: clamp(40px, 5.3vw, 76px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+    .subtitle {
+      max-width: 1080px;
+      color: #334155;
+      font-size: clamp(17px, 1.45vw, 23px);
+      line-height: 1.45;
+      margin: 0;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f8fafc;
+      color: #263445;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .talk-track {
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 10px;
+    }
+    h2 { margin: 0; font-size: 20px; line-height: 1.2; }
+    h3 { margin: 0; font-size: 15px; line-height: 1.25; }
+    p { margin: 0; }
+    .timeline { display: grid; gap: 8px; }
+    .beat {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid #edf1f5;
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+    .time {
+      color: var(--teal);
+      font-weight: 900;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .beat strong { display: block; font-size: 14px; margin-bottom: 2px; }
+    .beat span { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .middle {
+      display: grid;
+      grid-template-columns: minmax(340px, .8fr) minmax(0, 1.2fr) minmax(300px, .7fr);
+      gap: 18px;
+      min-height: 0;
+    }
+    .visual {
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      min-height: 0;
+    }
+    .visual h2 { font-size: 18px; }
+    .image-pair {
+      display: grid;
+      grid-template-columns: .95fr .72fr;
+      gap: 12px;
+      min-height: 0;
+      align-items: stretch;
+    }
+    .shot {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #111827;
+      min-height: 320px;
+    }
+    .shot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .shot.poster img { object-fit: cover; }
+    .caption {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(17, 24, 39, .78);
+      color: #f8fafc;
+      border-radius: 6px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .pipeline {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      min-height: 0;
+    }
+    .pipeline-head {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+    .pipeline-head p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-content: stretch;
+    }
+    .step {
+      position: relative;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 9px;
+      min-height: 230px;
+      box-shadow: var(--shadow);
+    }
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 10px;
+      height: 2px;
+      background: var(--teal);
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+    .num {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #fff;
+      background: var(--teal);
+    }
+    .step:nth-child(2) .num { background: var(--blue); }
+    .step:nth-child(3) .num { background: var(--gold); }
+    .step:nth-child(4) .num { background: var(--red); }
+    .step:nth-child(5) .num { background: var(--green); }
+    .step p { color: var(--muted); font-size: 13px; line-height: 1.38; }
+    .model {
+      font-size: 12px;
+      color: #263445;
+      border-top: 1px solid #edf1f5;
+      padding-top: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .control {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      min-height: 102px;
+    }
+    .control b { display: block; margin-bottom: 6px; font-size: 14px; }
+    .control span { display: block; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .control:nth-child(1) { background: var(--soft-teal); }
+    .control:nth-child(2) { background: var(--soft-blue); }
+    .control:nth-child(3) { background: var(--soft-gold); }
+    .control:nth-child(4) { background: var(--soft-red); }
+    .right-stack { display: grid; gap: 18px; grid-template-rows: 1fr 1fr; min-height: 0; }
+    .panel { padding: 16px; min-height: 0; }
+    .bullets { margin: 12px 0 0; padding-left: 18px; color: #273445; font-size: 13px; line-height: 1.45; }
+    .bullets li { margin: 7px 0; }
+    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .metric { border: 1px solid #edf1f5; border-radius: 8px; padding: 10px; background: #fbfcfe; }
+    .metric strong { display: block; font-size: 21px; line-height: 1; margin-bottom: 5px; }
+    .metric span { color: var(--muted); font-size: 12px; }
+    .bottom {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .closing {
+      padding: 18px;
+      background: #111827;
+      color: #f8fafc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      box-shadow: var(--shadow);
+    }
+    .closing strong { display: block; font-size: 24px; line-height: 1.15; }
+    .closing span { display: block; margin-top: 6px; color: #cbd5e1; font-size: 13px; }
+    .handoff {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .handoff p { color: var(--muted); font-size: 13px; line-height: 1.4; margin-top: 6px; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92em;
+      background: rgba(148, 163, 184, .16);
+      border: 1px solid rgba(148, 163, 184, .28);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+    @media (max-width: 1200px) {
+      .stage { min-height: auto; }
+      .top, .middle, .bottom { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr 1fr; }
+      .step::after { display: none; }
+      .controls { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 760px) {
+      .flow, .controls, .image-pair, .metric-grid { grid-template-columns: 1fr; }
+      .shot { min-height: 260px; }
+      .closing { display: block; }
+      h1 { font-size: 36px; }
+    }
+    @media print {
+      body { background: #fff; }
+      .stage { width: 100%; min-height: 0; padding: 10mm; }
+      .hero, .panel, .tile, .visual, .talk-track, .step, .control, .closing, .handoff { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="top">
+      <article class="hero">
+        <div class="kicker"><span class="dot"></span> 5분 발표 화면 · Image2Trailer AI Scene Director</div>
+        <h1>이미지 한 장을 영화 예고편 패키지로 변환하는 라이브 생성 파이프라인</h1>
+        <p class="subtitle">객체 탐지, 멀티모달 장면 연출, 포스터 생성, 한국어/영어 음성 합성을 하나의 Gradio 데모로 묶었습니다. 발표 중에는 미리 생성된 결과를 보여주며 “각 모델이 어떤 입력을 받아 어떤 출력을 만드는가”를 설명합니다.</p>
+        <div class="chips">
+          <span class="chip">입력: 이미지 1장</span>
+          <span class="chip">출력: 분석 · 제목 · 대본 · 포스터 · 음성</span>
+          <span class="chip">언어: 한국어/영어 선택</span>
+          <span class="chip">음성: 내 목소리 클론/기본 목소리 선택</span>
+          <span class="chip">GPU: RTX 5090, CUDA_VISIBLE_DEVICES=3</span>
+        </div>
+      </article>
+
+      <aside class="talk-track">
+        <h2>5분 발표 흐름</h2>
+        <div class="timeline">
+          <div class="beat"><div class="time">0:00</div><div><strong>문제 정의</strong><span>이미지 한 장만 보고 영화 예고편의 핵심 산출물을 자동 구성한다.</span></div></div>
+          <div class="beat"><div class="time">0:45</div><div><strong>사용자 경험</strong><span>이미지, 포스터 레퍼런스, 출력 언어, 음성 모드만 선택한다.</span></div></div>
+          <div class="beat"><div class="time">1:30</div><div><strong>모델 파이프라인</strong><span>Detector → Director → Poster → TTS 순서로 데이터가 흘러간다.</span></div></div>
+          <div class="beat"><div class="time">2:50</div><div><strong>완성 포인트</strong><span>Z-Image가 제목 포함 포스터를 직접 만들고, Qwen3-TTS가 voice clone을 수행한다.</span></div></div>
+          <div class="beat"><div class="time">4:00</div><div><strong>데모 결과 확인</strong><span>미리 돌려둔 Gradio 결과에서 포스터와 음성을 재생한다.</span></div></div>
+          <div class="beat"><div class="time">4:45</div><div><strong>마무리</strong><span>여러 모델을 현장 데모 가능한 하나의 생성 워크플로로 통합했다.</span></div></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="middle">
+      <article class="visual">
+        <h2>실제 산출물 예시</h2>
+        <div class="image-pair">
+          <figure class="shot"><img src="outputs/inspection/latest_gradio_2.png" alt="업로드 원본 이미지 예시"><figcaption class="caption">입력 이미지</figcaption></figure>
+          <figure class="shot poster"><img src="outputs/inspection/latest_gradio_1.png" alt="생성 포스터 예시"><figcaption class="caption">생성 포스터</figcaption></figure>
+        </div>
+        <p class="note">발표 중 실제 데모 화면은 별도로 띄워두고, 이 발표 화면은 전체 구조와 핵심 메시지를 고정해서 설명하는 용도입니다.</p>
+      </article>
+
+      <section class="pipeline">
+        <div class="pipeline-head">
+          <div>
+            <h2>End-to-End 생성 흐름</h2>
+            <p>각 단계는 명확한 입력/출력을 갖고, 실패 시 fallback 상태를 UI에 표시합니다.</p>
+          </div>
+          <span class="chip">목표: 2-3분 내 결과 확인</span>
+        </div>
+
+        <div class="flow">
+          <article class="step">
+            <div class="num">1</div>
+            <h3>Object Detection</h3>
+            <p>사용자가 입력한 탐지 쿼리를 기준으로 장면 단서를 찾고 박스 이미지를 만든다.</p>
+            <div class="model">Grounding DINO</div>
+          </article>
+          <article class="step">
+            <div class="num">2</div>
+            <h3>Scene Director</h3>
+            <p>원본 이미지와 탐지 객체를 근거로 장면 분석, 장르, 제목, 로그라인, 대본을 JSON으로 생성한다.</p>
+            <div class="model">google/gemma-4-12B-it</div>
+          </article>
+          <article class="step">
+            <div class="num">3</div>
+            <h3>Poster Generation</h3>
+            <p>Gemma의 포스터 프롬프트와 제목을 받아 영화 포스터를 직접 생성한다. 텍스트 오버레이 후처리는 제거했다.</p>
+            <div class="model">Tongyi-MAI/Z-Image-Turbo</div>
+          </article>
+          <article class="step">
+            <div class="num">4</div>
+            <h3>Voice Narration</h3>
+            <p>선택한 언어의 내레이션을 WAV로 합성한다. 클론 선택 시 미리 올린 목소리 샘플을 참조한다.</p>
+            <div class="model">Qwen3-TTS Base / CustomVoice</div>
+          </article>
+          <article class="step">
+            <div class="num">5</div>
+            <h3>Gradio Output</h3>
+            <p>박스 이미지, 객체 리스트, 텍스트 결과, 포스터, 오디오, 단계별 상태를 한 화면에 보여준다.</p>
+            <div class="model">src/ui.py · run_pipeline()</div>
+          </article>
+        </div>
+
+        <div class="controls">
+          <div class="control"><b>출력 언어</b><span>한국어 모드와 영어 모드를 선택한다. Gemma 텍스트와 TTS language가 함께 바뀐다.</span></div>
+          <div class="control"><b>음성 모드</b><span>내 목소리 클론 또는 기본 목소리 중 선택한다.</span></div>
+          <div class="control"><b>포스터 방식</b><span>Z-Image가 제목 포함 포스터를 직접 생성한다. PIL 텍스트 후처리는 사용하지 않는다.</span></div>
+          <div class="control"><b>현장 안정성</b><span>각 adapter 실패 시 fallback status를 반환해 발표 흐름이 끊기지 않게 한다.</span></div>
+        </div>
+      </section>
+
+      <aside class="right-stack">
+        <article class="panel">
+          <h2>기술적으로 보여줄 점</h2>
+          <ul class="bullets">
+            <li>하나의 이미지가 단계별 구조화 데이터로 바뀌며, 각 모델의 역할이 분리되어 있다.</li>
+            <li>Gemma는 창작 결과를 JSON 계약으로 반환해 Poster/TTS/UI가 그대로 소비한다.</li>
+            <li>TTS는 별도 `.venv_tts` subprocess에서 실행되어 Gemma와 dependency 충돌을 피한다.</li>
+            <li>언어 선택과 음성 선택이 데모 흐름 안에서 조합 가능하다.</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h2>발표 중 수치로 말할 것</h2>
+          <div class="metric-grid">
+            <div class="metric"><strong>4</strong><span>핵심 모델 단계</span></div>
+            <div class="metric"><strong>2</strong><span>언어 모드</span></div>
+            <div class="metric"><strong>2</strong><span>음성 모드</span></div>
+            <div class="metric"><strong>~2분</strong><span>목표 데모 지연</span></div>
+          </div>
+          <ul class="bullets">
+            <li>voice clone은 업로드된 20초 reference 음성과 transcript로 검증 완료.</li>
+            <li>Z-Image-Turbo, Gemma 4, Grounding DINO, Qwen3-TTS는 모두 로컬 GPU 실행 경로로 연결.</li>
+          </ul>
+        </article>
+      </aside>
+    </section>
+
+    <section class="bottom">
+      <article class="closing">
+        <div>
+          <strong>핵심 메시지: 이미지 이해 모델과 생성 모델을 연결해 “장면을 해석하고 연출하는” 데모를 완성했다.</strong>
+          <span>발표 마무리는 미리 생성된 Gradio 결과에서 포스터와 음성을 재생하며 끝낸다.</span>
+        </div>
+        <span class="chip">Demo handoff: Gradio 결과 화면으로 전환</span>
+      </article>
+      <article class="handoff">
+        <h2>발표자 큐</h2>
+        <p>처음 3분은 이 화면으로 구조를 설명하고, 4분 지점에서 이미 실행된 Gradio 결과로 전환합니다. 마지막 30초는 “언어/음성/포스터 생성이 모두 선택 가능한 하나의 파이프라인”이라는 완성 기준을 강조합니다.</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

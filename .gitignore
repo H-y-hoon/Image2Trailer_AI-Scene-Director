@@ -1,0 +1,23 @@
+.venv/
+.venv_tts/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+outputs/
+*.log
+.DS_Store
+
+# Local voice samples are personal data. Keep the reference text if needed,
+# but do not commit recorded audio files.
+voice_reference/*.wav
+voice_reference/*.m4a
+voice_reference/*.mp3
+voice_reference/*.flac
+voice_reference/yanghoon_ref_txt
+# Local agent/editor metadata
+AGENTS.md
+.codex/
+.agents/
+.omx/

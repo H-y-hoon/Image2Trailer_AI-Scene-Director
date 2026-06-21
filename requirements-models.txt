@@ -1,0 +1,15 @@
+# Optional real-model dependencies. Install incrementally, not before the mock app is stable.
+# Server driver is CUDA 12.8, so use cu128 wheels instead of PyPI's newer cu130 default.
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.11.0+cu128
+torchvision==0.26.0+cu128
+transformers>=5.12.1
+accelerate>=1.14.0
+diffusers>=0.38.0
+
+# Qwen3-TTS runs in an isolated venv because qwen-tts pins transformers==4.57.3,
+# while Gemma 4 requires the newer Transformers stack in .venv.
+# Setup used for the live demo:
+#   python3 -m venv .venv_tts
+#   .venv_tts/bin/pip install --extra-index-url https://download.pytorch.org/whl/cu128 torch==2.11.0+cu128 torchaudio==2.11.0+cu128
+#   .venv_tts/bin/pip install qwen-tts soundfile
